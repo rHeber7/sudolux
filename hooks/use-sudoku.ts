@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   BOARD_SIZE,
   cloneGrid,
@@ -25,6 +25,11 @@ interface SudokuState {
   given: boolean[][]
 }
 
+const EMPTY_ROW = new Array(BOARD_SIZE).fill(0)
+const EMPTY_GRID: Grid = new Array(BOARD_SIZE)
+  .fill(null)
+  .map(() => [...EMPTY_ROW])
+
 function initState(difficulty: Difficulty): SudokuState {
   const puzzle = generateSudoku(difficulty)
   return {
@@ -34,11 +39,27 @@ function initState(difficulty: Difficulty): SudokuState {
   }
 }
 
+/**
+ * Placeholder state used for the very first (server + initial client) render.
+ * The real puzzle is generated on mount to keep markup deterministic and avoid
+ * hydration mismatches from random generation.
+ */
+function emptyState(): SudokuState {
+  return {
+    puzzle: {
+      difficulty: 'easy',
+      puzzle: cloneGrid(EMPTY_GRID),
+      solution: cloneGrid(EMPTY_GRID),
+    },
+    values: cloneGrid(EMPTY_GRID),
+    given: EMPTY_GRID.map((row) => row.map(() => false)),
+  }
+}
+
 export function useSudoku(initialDifficulty: Difficulty = 'easy') {
   const [difficulty, setDifficulty] = useState<Difficulty>(initialDifficulty)
-  const [state, setState] = useState<SudokuState>(() =>
-    initState(initialDifficulty),
-  )
+  const [state, setState] = useState<SudokuState>(emptyState)
+  const [ready, setReady] = useState(false)
   const [selected, setSelected] = useState<SelectedCell | null>(null)
   const [status, setStatus] = useState<GameStatus>('playing')
   const [errorCells, setErrorCells] = useState<boolean[][] | null>(null)
@@ -48,9 +69,17 @@ export function useSudoku(initialDifficulty: Difficulty = 'easy') {
   const newGame = useCallback((next: Difficulty) => {
     setDifficulty(next)
     setState(initState(next))
+    setReady(true)
     setSelected(null)
     setStatus('playing')
     setErrorCells(null)
+  }, [])
+
+  // Generate the first puzzle after mount so server/client markup matches.
+  useEffect(() => {
+    setState(initState(initialDifficulty))
+    setReady(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const restart = useCallback(() => {
