@@ -20,7 +20,7 @@ export function SudokuControls({
     <div className="flex w-full max-w-[min(92vw,540px)] flex-wrap gap-2">
       <Button size="lg" onClick={onNewGame} className="flex-1">
         <Sparkles className="size-4" />
-        Neues Sudoku
+        New Sudoku
       </Button>
       <Button
         size="lg"
@@ -30,7 +30,7 @@ export function SudokuControls({
         className="flex-1"
       >
         <CircleCheckBig className="size-4" />
-        Prüfen
+        Verify
       </Button>
       <Button
         size="lg"

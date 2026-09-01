@@ -1,0 +1,11 @@
+Expand the existing Puzzle Lab website to include the “Lights Out” game.
+
+- Add a navigation menu to the header that allows users to switch between “Sudoku” and “Lights Out.”
+- Sudoku should continue to function as before.
+- Create a separate Lights Out page with a modern 5×5 game board where users can select different difficulty levels.
+- Each cell is either on or off (true or false). Clicking a cell toggles that cell and its immediate neighbors (up, down, left, right).
+- The goal is to turn off all the lights.
+- Add buttons for “New Game” and “Verify.”
+- Generate solvable grids.
+- Adopt the existing futuristic design, including Light/Dark Mode, and ensure a responsive layout. The design should have a futuristic, cyberpunk or sci-fi feel.
+- Keep the games and components modular so that additional puzzle games can be easily added later.
